@@ -1,5 +1,6 @@
 require('dotenv').config()
 const bodyParser = require('body-parser')
+const chalk = require('chalk')
 const compression = require('compression')
 const connectMongo = require('connect-mongo')
 const cookieParser = require('cookie-parser')
@@ -8,16 +9,25 @@ const minify = require('express-minify')
 const session = require('express-session')
 const createError = require('http-errors')
 const logger = require('morgan')
+const passport = require('passport')
 const path = require('path')
 const MongoStore = connectMongo(session)
+
+const { Admin, Notification, Teacher, User } = require('./models')
+
+require('./utils/passport/google')
+require('./utils/passport/local')
 
 const appConfig = require('./config')
 
 // Route Imports
-const { IndexRouter } = require('./routes')
+const { AuthRouter, IndexRouter, NotificationRouter } = require('./routes')
 
 const app = express()
 app.config = appConfig
+app.colorLog = (sentence, color) => {
+  console.log(chalk[color](sentence))
+}
 
 // View Engine Setup
 app.set('views', path.join(__dirname, 'views'))
@@ -60,7 +70,7 @@ app.events = [
   {
     title: 'The Nudge Foundation',
     text: 'A Nudge to the Future You !',
-    img: '/images/nudge.jpeg',
+    img: '/images/background.jpeg',
     time: [date, date.setDate(date.getDate() + 1)],
     link: {
       link_url: 'https://github.com/CFGIndia20/team-28',
@@ -77,8 +87,74 @@ app.use((req, res, next) => {
   next()
 })
 
-app.use('/', IndexRouter)
+app.use(passport.initialize())
+app.use(passport.session())
 
+app.use(async (req, res, next) => {
+  if (!req.query.delete_notif || !req.session.user) {
+    return next()
+  }
+  next = () => {
+    console.log(req.originalUrl)
+    return res.redirect(
+      req.originalUrl.split('delete_notif=' + req.query.delete_notif).join('')
+    )
+  }
+  let user
+  switch (req.session.user.usertype) {
+    case 'Admin':
+      user = await Admin.findById(req.session.user._id).populate('notifications').exec()
+      break
+    case 'Teacher':
+      user = await Teacher.findById(req.session.user._id).populate('notifications').exec()
+      break
+    case 'User':
+      user = await User.findById(req.session.user._id).populate('notifications').exec()
+  }
+
+  if (!user) {
+    return next()
+  }
+
+  const notif = user.notifications.find(x => x.id === req.query.delete_notif)
+  if (!notif) {
+    return next()
+  }
+  await Notification.deleteOne({ _id: notif._id }).exec()
+  user.notifications.splice(user.notifications.indexOf(notif), 1)
+  await user.save()
+  return next()
+})
+
+app.use('/', IndexRouter)
+app.use('/account/', AuthRouter)
+app.use(async (req, res, next) => {
+  if (req.session.user) {
+    let user
+    try {
+      switch (req.session.user.usertype) {
+        case 'Admin':
+          user = await Admin.findById(req.session.user._id).exec()
+          break
+        case 'Teacher':
+          user = await Teacher.findById(req.session.user._id).exec()
+          break
+        case 'User':
+          user = await User.findById(req.session.user._id).exec()
+      }
+    } catch (error) {
+      next(new Error('Could not restore User from Session.'))
+    }
+
+    if (user) {
+      req.session.user = user
+      return next()
+    } else {
+      return next(new Error('Could not restore User from Session.'))
+    }
+  } else res.redirect('/')
+})
+app.use('/notifications/', NotificationRouter)
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   next(createError(404))
