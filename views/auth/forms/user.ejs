@@ -23,21 +23,12 @@
                       <h3 style="color: black; text-align: left;">GENERAL</h3>
                       <div class="form-group">
                         <label for="phone">Phone*</label>
-                        <input type="tel" class="form-control" id="phone" placeholder="+91 xxxxxxxxxx" name="phone" pattern="[0-9]{10}" required />
+                        <input type="tel" class="form-control" id="phone" placeholder="xxxxxxxxxx" name="phone" pattern="[0-9]{10}" required />
                       </div>
                       <div class="form-group">
-                        <label for="website">Portfolio*</label>
-                        <input type="url" class="form-control" id="website" placeholder="Enter the URL of your website" name="website" />
-                      </div>
-                      <div class="form-group">
-                        <label for="summary">Bio*</label>
-                        <textarea class="form-control" id="summary" placeholder="A short bio describing you" name="summary" required></textarea>
-                      </div>
-                      <div class="form-group">
-                        <label for="expertise">Area of Expertise*</label>
-                        <input type="text" class="form-control" id="expertise" placeholder="(eg. Software Developer)" name="expertise" required />
-                      </div>
-
+                          <label for="birthDate">DOB*</label>
+                          <input type="month" name="birthDate" class="form-control" id="birthDate" required />
+                        </div>
                       <h3 style="color: black; text-align: left; margin-top: 40px;">
                         LOCATION
                       </h3>
@@ -55,29 +46,13 @@
                           <input type="text" name="postalCode" class="form-control" id="postalCode" placeholder="Postal Code" required />
                         </div>
                       </div>
-                      <div class="form-row">
-                        <div class="form-group col-md-6">
-                          <label for="countryCode">Country Code*</label>
-                          <input type="text" name="countryCode" class="form-control" id="countryCode" placeholder="Country Code (eg. US)" required />
-                        </div>
-                        <div class="form-group col-md-6">
-                          <label for="region">Region*</label>
-                          <input type="text" name="region" class="form-control" id="region" placeholder="Region (eg. CA)" required />
-                        </div>
-                      </div>
-
-                      <h3 style="color: black; text-align: left; margin-top: 40px;">
-                        WORK EXPERIENCE
-                      </h3>
                       <div class="form-group">
-                        <div class="field_wrapper"></div>
-                        <button class="button default btn btn-warning add_button">
-                          Add
-                        </button>
+                        <label for="region">Region*</label>
+                        <input type="text" name="region" class="form-control" id="region" placeholder="Region (eg. CA)" required />
                       </div>
 
                       <h3 style="color: black; text-align: left; margin-top: 40px;">
-                        EDUCATION
+                        12th Grade
                       </h3>
                       <div class="form-group">
                         <div class="field_wrapper1">
@@ -86,81 +61,33 @@
                             <input type="text" id="institution" class="form-control" placeholder="University/School Name" name="institution[]" required / >
                           </div>
                           <br />
-                          <div class="form-group">
-                            <label for="studyType">Degree type*</label>
-                            <input type="text" class="form-control" id="studyType" placeholder="Enter your Degree type (eg. Masters)" name="studyType[]" required />
-                          </div>
-                          <div class="form-group">
-                            <label for="area">Stream/ Major*</label>
-                            <input type="text" class="form-control" id="area" placeholder="Enter your specialization" name="area[]" required />
-                          </div>
                           <div class="form-row">
                             <div class="form-group col-md-6">
-                              <label for="studyStartDate">From*</label>
-                              <input type="month" name="studyStartDate[]" class="form-control" id="studyStartDate" required />
+                              <label for="startDate">From*</label>
+                              <input type="month" name="startDate" class="form-control" id="startDate" required />
                             </div>
                             <div class="form-group col-md-6">
-                              <label for="studyEndDate">To*</label>
-                              <input type="month" name="studyEndDate[]" class="form-control" id="studyEndDate" required />
+                              <label for="endDate">To*</label>
+                              <input type="month" name="endDate" class="form-control" id="endDate" required />
                             </div>
                           </div>
                           <div class="form-group">
-                            <label for="gpa">CGPA*</label>
-                            <input type="number" class="form-control" id="gpa" placeholder="Enter your CGPA" name="gpa[]" min="0" max="4" step="0.01" required />
+                            <label for="percentage">Percentage*</label>
+                            <input type="number" class="form-control" id="percentage" placeholder="Enter your %" name="percentage" min="0" max="100" step="0.01" required />
                           </div>
                         </div>
-                        <button class="button default btn btn-warning add_button1">
-                          Add
-                        </button>
                       </div>
 
-                      <h3 style="color: black; text-align: left; margin-top: 40px;">
-                        ACHIEVEMENTS
-                      </h3>
+                      <h3>Slot</h3>
                       <div class="form-group">
-                        <div class="field_wrapper2"></div>
-                        <button class="button default btn btn-warning add_button2">
-                          Add
-                        </button>
+                        <label for="slot">Slot*</label>
+                        <select name="slot" id="slot">
+                          <% for(let i = 7; i<= 20; i++) {%>
+                            <option value="<%=i %>"><%= i %>:00</option>
+                          <% } %>
+                        </select>
                       </div>
 
-                      <h3 style="color: black; text-align: left; margin-top: 40px;">
-                        SKILLS
-                      </h3>
-                      <div class="form-group">
-                        <div class="field_wrapper3"></div>
-                        <br />
-                        <button class="button default btn btn-warning add_button3">
-                          Add
-                        </button>
-                      </div>
-
-                      <h3 style="color: black; text-align: left; margin-top: 40px;">
-                        REFERENCES
-                      </h3>
-                      <div class="form-group">
-                        <div class="field_wrapper4"></div>
-                        <br />
-                        <button class="button default btn btn-warning add_button4">
-                          Add
-                        </button>
-                      </div>
-
-                      <h3 style="color: black; text-align: left; margin-top: 40px;">
-                        SOCIAL
-                      </h3>
-                      <div class="form-group">
-                        <label for="linkedin">LinkedIn</label>
-                        <input type="url" class="form-control" id="linkedin" placeholder="LinkedIn Profile URL" name="linkedin" />
-                      </div>
-                      <div class="form-group">
-                        <label for="github">GitHub</label>
-                        <input type="url" class="form-control" id="github" placeholder="GiHub Profile URL" name="github" />
-                      </div>
-                      <div class="form-group">
-                        <label for="twitter">Twitter</label>
-                        <input type="url" class="form-control" id="twitter" placeholder="Twitter Profile URL" name="twitter" />
-                      </div>
                       <button id="submitButton" type="submit" class="button primary btn btn-primary">
                         Submit
                       </button>
@@ -186,5 +113,4 @@
   <script src="/javascripts/vendor/main.js"></script>
   <script src="/javascripts/vendor/jquery.scrolly.min.js"></script>
   <script src="/javascripts/util.js"></script>
-  <script src="/javascripts/menu-form.js"></script>
 </html>

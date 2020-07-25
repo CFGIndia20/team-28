@@ -30,7 +30,7 @@
     function gramCardHeader(post) {
       return `
       <div class="gram-card-header">
-        <img class="gram-card-user-image lozad" src="${post.author.usertype == 'user' ? post.author.resume.basics.picture : post.author.logo}">
+        <img class="gram-card-user-image lozad" src="${post.author.general.picture}">
         <a class="gram-card-user-name" href="/users/${post.author.usertype}/@${post.author.username}">${post.author.username}</a>
         <div class="dropdown gram-card-time">
         ${post.author.username == username ? '<a style="margin-left: 10px" title="Delete" href="/post/delete/' + post._id +  '">🗑</a>' : ''}
