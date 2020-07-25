@@ -77,12 +77,8 @@ const postSchema = mongoose.Schema({
   }
 })
 
-const Comment = mongoose.model('Comment', commentSchema)
-const Like = mongoose.model('Like', likeSchema)
-const Post = mongoose.model('Post', postSchema)
-
 module.exports = {
-  Comment,
-  Like,
-  Post
+  Comment: mongoose.model('Comment', commentSchema),
+  Like: mongoose.model('Like', likeSchema),
+  Post: mongoose.model('Post', postSchema)
 }
