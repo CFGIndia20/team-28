@@ -1,4 +1,5 @@
 module.exports = {
   AuthRouter: require('./auth'),
-  IndexRouter: require('./main')
+  IndexRouter: require('./main'),
+  NotificationRouter: require('./notification')
 }
