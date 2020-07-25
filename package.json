@@ -78,5 +78,11 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "uuid": "8.2.0"
-  }
+  },
+  "engines": {
+    "node": ">= 10",
+    "npm": "please use yarn instead",
+    "yarn": ">= 1.2.4"
+  },
+  "engineStrict": true
 }
