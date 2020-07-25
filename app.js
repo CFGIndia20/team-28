@@ -1,5 +1,6 @@
 require('dotenv').config()
 const bodyParser = require('body-parser')
+const chalk = require('chalk')
 const compression = require('compression')
 const connectMongo = require('connect-mongo')
 const cookieParser = require('cookie-parser')
@@ -23,6 +24,9 @@ const { AuthRouter, IndexRouter } = require('./routes')
 
 const app = express()
 app.config = appConfig
+app.colorLog = (sentence, color) => {
+  console.log(chalk[color](sentence))
+}
 
 // View Engine Setup
 app.set('views', path.join(__dirname, 'views'))
@@ -65,7 +69,7 @@ app.events = [
   {
     title: 'The Nudge Foundation',
     text: 'A Nudge to the Future You !',
-    img: '/images/nudge.jpeg',
+    img: '/images/background.jpeg',
     time: [date, date.setDate(date.getDate() + 1)],
     link: {
       link_url: 'https://github.com/CFGIndia20/team-28',

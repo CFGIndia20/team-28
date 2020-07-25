@@ -40,21 +40,24 @@ const adminSchema = mongoose.Schema({
     type: String,
     required: true
   },
-  email: {
-    type: String,
-    required: true,
-    validate: {
-      validator: (v) => validator.isEmail(v)
+  general: {
+    name: String,
+    email: {
+      type: String,
+      required: true,
+      validate: {
+        validator: (v) => validator.isEmail(v)
+      }
+    },
+    picture: {
+      type: String,
+      default: '/images/admin.png'
     }
   },
-  profilePicture: {
-    type: String,
-    default: '/images/admin.png'
-  },
-  notifications: {
+  notifications: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Notification'
-  },
+  }],
   posts: [
     {
       type: mongoose.Schema.Types.ObjectId,
