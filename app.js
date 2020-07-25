@@ -15,6 +15,7 @@ const MongoStore = connectMongo(session)
 
 const { Admin, Notification, Teacher, User } = require('./models')
 
+require('./utils/passport/google')
 require('./utils/passport/local')
 
 const appConfig = require('./config')

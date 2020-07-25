@@ -24,7 +24,7 @@ router.get('/', async (req, res, next) => {
       events: req.app.events
     })
   } else {
-    res.render('land', {
+    res.render('landing', {
       title: req.app.config.name,
       error: req.query.error || false
     })
