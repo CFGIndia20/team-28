@@ -155,6 +155,7 @@ const teacherSchema = mongoose.Schema({
     name: String,
     birthDate: String,
     picture: String,
+    gender: String,
     email: {
       type: String,
       required: true
