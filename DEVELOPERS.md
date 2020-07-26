@@ -37,7 +37,7 @@ git clone git@github.com:CFGIndia20/team-28.git
 ```
 
 ```
-# Go to the Apply-by-AI directory:
+# Go to the Nudge.ai directory:
 cd team-28
 ```
 
