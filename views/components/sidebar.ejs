@@ -34,10 +34,6 @@
           <a title="Toggle light/dark mode" href="#" id="darkmode">Light/Dark</a>
         </li>
         <li class="list-group-item">
-          <i class="fa fa-search"></i>&nbsp;
-          <a title="Search for users/companies" href="/users/">Search</a>
-        </li>
-        <li class="list-group-item">
           <i class="fa fa-plus"></i>&nbsp;
           <a title="Share your thoughts" href="/post/upload/">Post</a>
         </li>
@@ -50,6 +46,17 @@
         <li class="list-group-item list-group-item-primary">
           Tasks
         </li>
+        <% if(user.usertype === 'Admin') { %>
+        <li class="list-group-item">
+          <i class="fa fa-user-tie"></i>&nbsp;
+          <a title="Exit" href="/admin/create/teacher">Create teacher</a>
+        </li>
+        <% } %> <% if(user.usertype === 'Teacher') { %>
+        <li class="list-group-item">
+          <i class="fa fa-chart-pie"></i>&nbsp;
+          <a title="Exit" href="/teacher/schedule">Schedule</a>
+        </li>
+        <% } %>
         <li class="list-group-item">
           <i class="fa fa-power-off"></i>&nbsp;
           <a title="Exit" href="/account/out/">Sign out</a>

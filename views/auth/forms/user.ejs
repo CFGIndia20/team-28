@@ -20,6 +20,22 @@
                 <div class="row">
                   <div class="col-md-7 col-sm-12 col-xs-12" style="margin: auto;">
                     <form action="/account/new/user/info" method="POST">
+                      <h3>Quiz</h3>
+                      <% for(let i = 0; i<questions.length; i++ ) { %>
+                        <div class="form-group">
+                          <label for="question<%= i %>"><%= questions[i].question %></label>
+                          <select name="question<%= i %>">
+                            <% for(let j=0; j<4; j++) { %>
+                              <option value="<%= j %>"><%= questions[i].choices[j] %></option>
+                            <% } %>
+                          </select>
+                        </div>
+                      <% } %>
+                      <br>
+                      <br>
+                      <hr>
+                      <br>
+                      <br>
                       <h3 style="color: black; text-align: left;">GENERAL</h3>
                       <div class="form-group">
                         <label for="phone">Phone*</label>
@@ -81,7 +97,7 @@
                       <h3>Slot</h3>
                       <div class="form-group">
                         <label for="slot">Slot*</label>
-                        <select name="slot" id="slot">
+                        <select name="slot" name="slot" id="slot">
                           <% for(let i = 7; i<= 20; i++) {%>
                             <option value="<%=i %>"><%= i %>:00</option>
                           <% } %>

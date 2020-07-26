@@ -92,11 +92,11 @@
         <button 
           class="footer-action-icons likes btn btn-link non-hoverable like-button-box" 
           data="${JSON.stringify(post.likes)}" 
-          style="text-decoration: none; color: ${post.likes.find(x => x.username == $('#posts').attr('user-id')) ? 'grey' : '#f0b917'}"
+          style="text-decoration: none;"
           author="${post.author.username}"
           id="${post._id}-like"
         >
-        👍${post.likes.length}
+        ${post.likes.find(x => x.username == $('#posts').attr('user-id')) ? '♥️' : '♥'}${post.likes.length}
         </button>
         <input id="${post._id}" class="comments-input comment-input-box" author="${post.author.username}" type="text" id="comment" placeholder="Click enter to comment here..."/>
       </div>
@@ -173,7 +173,7 @@
           }).done(function (data) {
             if (data.event) {
               $(elem).html(
-                (data.msg === 'Liked' ? '👍' : '👎') +
+                (data.msg === 'Liked' ? '♥' : '💛') +
                 data.amount
               )
               show_notification(data.msg, 'success')

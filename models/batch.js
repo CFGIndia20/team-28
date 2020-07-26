@@ -10,8 +10,8 @@ mongoose.connect(connectionUri, {
 
 const batchSchema = mongoose.Schema({
   createdOn: String,
-  startDate: String,
-  endDate: String,
+  startDate: Number,
+  endDate: Number,
   students: [
     {
       type: mongoose.Schema.Types.ObjectId,

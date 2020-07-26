@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 const bcrypt = require('bcrypt')
 const express = require('express')
 const lodash = require('lodash')
@@ -6,36 +7,43 @@ const querystring = require('querystring')
 const _ = require('underscore')
 const router = express.Router()
 
-const { Batch, Teacher, User } = require('../models/')
+const { Admin, Batch, Teacher, User } = require('../models/')
+const questions = require('../config/quiz')
 
 const findTeachers = async (slot) => {
+  slot = parseInt(slot)
   const shift = slot <= 15 ? 'morning' : 'evening'
 
   // reject all teachers not in this shift
-  let teachers = await Teacher.find({ shift }).exec()
+  let teachers = await Teacher.find({ shift }).populate('batches').exec()
 
   // reject teachers not available in given slot
   teachers = _.reject(teachers, (teacher) => {
-    return _.find(teacher.batches, (eachBatch) => eachBatch.slot === slot || Math.abs(eachBatch.slot - slot === 1))
+    return _.find(teacher.batches, (eachBatch) => eachBatch.slot == slot || Math.abs(eachBatch.slot - slot) === 1)
   })
 
   return teachers
 }
 
 const findNextBatch = async (req, res, next) => {
-  const nextMonday = new Date()
+  const today = new Date()
+  const nextMonday = today.setDate(today.getDate() + ((1 + 7 - today.getDay()) % 7))
   let existingBatch = await Batch.find().exec()
 
-  existingBatch = _.find(existingBatch, batch => {
-    return (batch.startDate === nextMonday.setDate(nextMonday.getDate() + ((1 + 7 - nextMonday.getDay()) % 7)) && batch.slot === req.body.slot)
+  existingBatch = _.find(existingBatch, (batch) => {
+    const d1 = new Date(parseInt(nextMonday)).getDate()
+    const d2 = new Date(parseInt(batch.startDate)).getDate()
+
+    // eslint-disable-next-line eqeqeq
+    return (d1 === d2 && batch.slot == req.body.slot)
   })
 
+  console.log('EXISTING', existingBatch)
   if (existingBatch) {
     req.body.batch = existingBatch
+    return next()
   } else {
     const availableTeachers = await findTeachers(req.body.slot)
-
-    console.log(availableTeachers)
 
     if (!availableTeachers.length) {
       return next()
@@ -80,12 +88,13 @@ router.get('/google/callback', passport.authenticate('google', { failureRedirect
 
 router.get('/new/user/info', (req, res, next) => {
   res.render('auth/forms/user', {
-    title: req.app.config.name
+    title: req.app.config.name,
+    questions
   })
 })
 
 router.post('/new/user/info', findNextBatch, async (req, res, next) => {
-  if ((new Date().getFullYear) - req.body.birthDate.split('-') <= 18 || (new Date().getFullYear) - req.body.birthDate.split('-') >= 27) {
+  if (new Date().getFullYear - req.body.birthDate.split('-') <= 18 || new Date().getFullYear - req.body.birthDate.split('-') >= 27) {
     return res.status(404).render('error', {
       error: new Error('You must be between 17-27 years old to register !')
     })
@@ -133,7 +142,29 @@ router.get('/out', (req, res, next) => {
   })
 })
 
-router.post('/admin/', passport.authenticate('local', { failureRedirect: '/err' }), (req, res) => {
+router.get('/admin', async (req, res) => {
+  const admin = await Admin.findOne({ username: process.env.ADMIN }).exec()
+  if (!admin) {
+    const newAdmin = new Admin({
+      username: process.env.ADMIN,
+      password: process.env.ADMIN_PASS,
+      general: {
+        name: process.env.ADMIN_NAME,
+        email: process.env.ADMIN_EMAIL,
+        picture: '/images/admin.png'
+      }
+    })
+    newAdmin.password = newAdmin.generateHash(newAdmin.password)
+    await newAdmin.save()
+  }
+  res.render('auth/admin_login', {
+    title: req.app.config.name,
+    error: false
+  })
+})
+
+router.post('/admin', passport.authenticate('local', { failureRedirect: '/err' }), (req, res) => {
+  console.log(req.session.passport.user)
   req.session.user = req.session.passport.user
   res.redirect('/?logged-in=' + Math.random().toString().slice(2).slice(0, 5))
 })

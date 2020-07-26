@@ -21,7 +21,7 @@ require('./utils/passport/local')
 const appConfig = require('./config')
 
 // Route Imports
-const { ApiRouter, AuthRouter, IndexRouter, NotificationRouter, PostRouter } = require('./routes')
+const { AdminRouter, ApiRouter, AuthRouter, IndexRouter, NotificationRouter, PostRouter, TeacherRouter } = require('./routes')
 
 const app = express()
 app.config = appConfig
@@ -157,6 +157,8 @@ app.use(async (req, res, next) => {
 app.use('/notifications/', NotificationRouter)
 app.use('/api/', ApiRouter)
 app.use('/post/', PostRouter)
+app.use('/admin/', AdminRouter)
+app.use('/teacher/', TeacherRouter)
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
