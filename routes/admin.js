@@ -10,18 +10,7 @@ router.get('/create/teacher', (req, res) => {
 })
 
 router.post('/create/teacher', async (req, res) => {
-  const {
-    name,
-    email,
-    dob,
-    phone,
-    gender,
-    shift,
-    postalCode,
-    address,
-    city,
-    region
-  } = req.body
+  const { name, email, dob, phone, gender, shift, postalCode, address, city, region } = req.body
   const username = email.substr(0, email.lastIndexOf('@'))
   let teacher = await Teacher.findOne({ username }).exec()
   if (teacher) {

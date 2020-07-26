@@ -35,10 +35,9 @@ const findNextBatch = async (req, res, next) => {
     const d2 = new Date(parseInt(batch.startDate)).getDate()
 
     // eslint-disable-next-line eqeqeq
-    return (d1 === d2 && batch.slot == req.body.slot)
+    return d1 === d2 && batch.slot == req.body.slot
   })
 
-  console.log('EXISTING', existingBatch)
   if (existingBatch) {
     req.body.batch = existingBatch
     return next()
