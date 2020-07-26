@@ -96,9 +96,7 @@ app.use(async (req, res, next) => {
   }
   next = () => {
     console.log(req.originalUrl)
-    return res.redirect(
-      req.originalUrl.split('delete_notif=' + req.query.delete_notif).join('')
-    )
+    return res.redirect(req.originalUrl.split('delete_notif=' + req.query.delete_notif).join(''))
   }
   let user
   switch (req.session.user.usertype) {
@@ -116,7 +114,7 @@ app.use(async (req, res, next) => {
     return next()
   }
 
-  const notif = user.notifications.find(x => x.id === req.query.delete_notif)
+  const notif = user.notifications.find((x) => x.id === req.query.delete_notif)
   if (!notif) {
     return next()
   }

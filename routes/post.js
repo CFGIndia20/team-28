@@ -1,6 +1,5 @@
 const { bgBlueBright } = require('chalk')
 const path = require('path')
-const marked = require('marked')
 const mv = require('mv')
 const mime = require('mime-types')
 const router = require('express').Router()
