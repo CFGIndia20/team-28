@@ -47,10 +47,6 @@ const postSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     refPath: 'onModel'
   },
-  batch: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Batch'
-  },
   staticUrl: String,
   caption: String,
   category: {

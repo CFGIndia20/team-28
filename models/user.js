@@ -91,7 +91,6 @@ const userSchema = mongoose.Schema({
   refreshToken: String,
   general: {
     name: String,
-    age: Number,
     birthDate: String,
     picture: String,
     email: {
@@ -112,19 +111,11 @@ const userSchema = mongoose.Schema({
     }
   },
   education: {
-    type: Array,
-    default: []
-    /*
-        "institution": "University",
-        "area": "Software Development",
-        "studyType": "Bachelor",
-        "startDate": "2011-01-01",
-        "endDate": "2013-01-01",
-        "gpa": "4.0",
-        "courses": [
-          "DB1101 - Basic SQL"
-        ]
-    */
+    institution: String,
+    studyType: String,
+    startDate: String,
+    endDate: String,
+    percentage: Number
   },
   chats: [
     {
@@ -143,7 +134,11 @@ const userSchema = mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Notification'
     }
-  ]
+  ],
+  batch: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Batch'
+  }
 })
 
 // Teacher Schema

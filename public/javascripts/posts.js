@@ -30,7 +30,7 @@
     function gramCardHeader(post) {
       return `
       <div class="gram-card-header">
-        <img class="gram-card-user-image lozad" src="${post.author.usertype == 'user' ? post.author.resume.basics.picture : post.author.logo}">
+        <img class="gram-card-user-image lozad" src="${post.author.general.picture}">
         <a class="gram-card-user-name" href="/users/${post.author.usertype}/@${post.author.username}">${post.author.username}</a>
         <div class="dropdown gram-card-time">
         ${post.author.username == username ? '<a style="margin-left: 10px" title="Delete" href="/post/delete/' + post._id +  '">🗑</a>' : ''}
@@ -92,11 +92,11 @@
         <button 
           class="footer-action-icons likes btn btn-link non-hoverable like-button-box" 
           data="${JSON.stringify(post.likes)}" 
-          style="text-decoration: none; color: ${post.likes.find(x => x.username == $('#posts').attr('user-id')) ? 'grey' : '#f0b917'}"
+          style="text-decoration: none;"
           author="${post.author.username}"
           id="${post._id}-like"
         >
-        👍${post.likes.length}
+        ${post.likes.find(x => x.username == $('#posts').attr('user-id')) ? '♥️' : '♥'}${post.likes.length}
         </button>
         <input id="${post._id}" class="comments-input comment-input-box" author="${post.author.username}" type="text" id="comment" placeholder="Click enter to comment here..."/>
       </div>
@@ -173,7 +173,7 @@
           }).done(function (data) {
             if (data.event) {
               $(elem).html(
-                (data.msg === 'Liked' ? '👍' : '👎') +
+                (data.msg === 'Liked' ? '♥' : '💛') +
                 data.amount
               )
               show_notification(data.msg, 'success')

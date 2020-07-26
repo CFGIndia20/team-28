@@ -1,9 +1,11 @@
 const express = require('express')
-const Fuse = require('fuse')
+const Fuse = require('fuse.js')
+const marked = require('marked')
 const q = require('queue')({ autostart: true })
+const ta = require('time-ago')
 const _ = require('underscore')
-const router = express.router()
-const { Admin, User, Teacher } = require('../../../models')
+const router = express.Router()
+const { Admin, Comment, Post, Like, User, Teacher } = require('../../../models')
 
 // Rate limiting
 router.use(async (req, res, next) => {
@@ -29,6 +31,64 @@ router.use(async (req, res, next) => {
     req.session.lastApi = date
     next()
   }
+})
+
+router.get('/v1/posts', async (req, res) => {
+  if (!req.session.user) {
+    res.sendStatus(404)
+  } else {
+    const page = req.query.page || 1
+    let posts
+    try {
+      posts = await Post.find({})
+        .populate('author')
+        .populate({
+          path: 'comments',
+          populate: {
+            path: 'by'
+          }
+        })
+        .lean()
+        .exec()
+    } catch (error) {
+      console.log(error)
+      return res.sendStatus(500)
+    }
+
+    posts = _.sortBy(posts, (eachPost) => new Date(eachPost.createdAt)).reverse()
+    posts = posts.slice(page === 1 ? 0 : 10 * (page - 1), page === 1 ? 10 : undefined)
+    res.status(200).send(
+      _.each(posts, (post) => {
+        post.timeago = ta.ago(post.createdAt)
+        post.caption = marked(post.caption)
+      })
+    )
+  }
+})
+
+router.post('/v1/comment', async (req, res, next) => {
+  if (!req.session.user) {
+    return res.status(400).send('Unauthorized')
+  }
+
+  const comment = new Comment({
+    by: req.session.user._id,
+    text: req.body.text,
+    onPost: req.body._id,
+    onModel: req.session.user.usertype
+  })
+
+  const post = await Post.findById(req.body._id)
+  post.comments.push(comment._id)
+  await comment.save()
+  await post.save()
+  return res.json({
+    by: {
+      username: req.session.user.username,
+      usertype: req.session.user.usertype
+    },
+    amount: post.comments.length
+  })
 })
 
 router.get('/v1/search', async (req, res) => {
@@ -114,3 +174,51 @@ router.post('/v1/notifications/markAsRead', async (req, res, next) => {
   await user.save()
   res.redirect('/notifications')
 })
+
+router.post('/v1/like', async (req, res, next) => {
+  if (!req.session.user) {
+    res.status(403).send('Unauthorized')
+  }
+
+  let like
+  try {
+    like = await Like.findOne({
+      by: req.session.user._id,
+      onModel: req.session.user.usertype,
+      onPost: req.body._id
+    }).exec()
+  } catch (error) {
+    return res.status(500).render('error', {
+      error: new Error('Database error')
+    })
+  }
+
+  const post = await Post.findById(req.body._id).exec()
+
+  if (like) {
+    await Like.deleteOne({ _id: like._id })
+    post.likes = _.reject(post.likes, (eachLike) => eachLike.equals(like._id))
+    await post.save()
+    return res.status(202).send({
+      event: true,
+      msg: 'Unliked',
+      amount: post.likes.length
+    })
+  } else {
+    like = new Like({
+      by: req.session.user._id,
+      onModel: req.session.user.usertype,
+      onPost: req.body._id
+    })
+    await like.save()
+    post.likes.push(like._id)
+    await post.save()
+    return res.status(202).send({
+      event: true,
+      msg: 'Liked',
+      amount: post.likes.length
+    })
+  }
+})
+
+module.exports = router

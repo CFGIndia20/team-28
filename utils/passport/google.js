@@ -36,7 +36,7 @@ passport.use(
       } else {
         console.log(chalk.blue('New user'))
         dbUser = {
-          basics: {
+          general: {
             name: profile.displayName,
             picture: profile.photos[0].value,
             email: profile.email
